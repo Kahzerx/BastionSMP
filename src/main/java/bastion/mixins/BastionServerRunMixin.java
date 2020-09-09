@@ -3,13 +3,18 @@ package bastion.mixins;
 import bastion.discord.DiscordFileManager;
 import bastion.discord.DiscordListener;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.world.level.storage.LevelStorage;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftServer.class)
-public class BastionServerRunMixin {
+public abstract class BastionServerRunMixin {
+    @Shadow @Final protected LevelStorage.Session session;
+
     @Inject(method = "runServer", at = @At("HEAD"))
     public void run (CallbackInfo ci){
         try {

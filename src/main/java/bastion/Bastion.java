@@ -2,6 +2,7 @@ package bastion;
 
 import bastion.discord.DiscordCommand;
 import bastion.here.HereCommand;
+import bastion.scoreboard.SBCommand;
 import bastion.where.WhereCommand;
 import com.google.common.collect.Sets;
 import com.mojang.brigadier.CommandDispatcher;
@@ -19,6 +20,7 @@ public class Bastion {
         DiscordCommand.register(dispatcher);
         HereCommand.register(dispatcher);
         WhereCommand.register(dispatcher);
+        SBCommand.register(dispatcher);
     }
 
     public static String getDimensionWithColor(World world) {
