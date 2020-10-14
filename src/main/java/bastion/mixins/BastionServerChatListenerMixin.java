@@ -17,5 +17,6 @@ public class BastionServerChatListenerMixin {
     @Inject(method = "onGameMessage", at = @At("RETURN"))
     public void chatMessage(ChatMessageC2SPacket packet, CallbackInfo ci){
         if (!packet.getChatMessage().startsWith("/")) DiscordListener.sendMessage("`<" + player.getName().getString() + ">` " + packet.getChatMessage());
+        else DiscordListener.sendMessageAdminChat(player.getName().getString(), packet.getChatMessage());
     }
 }

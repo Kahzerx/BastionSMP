@@ -172,6 +172,28 @@ public class DiscordListener extends ListenerAdapter {
         }
     }
 
+    public static void sendMessageAdminChat(String user, String msg) {
+        if (chatBridge && shouldFeedback(msg.split(" ")[0].substring(1))) {
+            try {
+                TextChannel ch = process.getTextChannelById("751401793597997107");
+                if (ch != null) ch.sendMessage(String.format("`%s` ha ejecutado `%s`", user, msg)).queue();
+            }
+            catch (Exception e){
+                System.out.println("wrong channelId :(");
+            }
+        }
+    }
+
+    private static boolean shouldFeedback(String command) {
+        String[] isNotValid = {"here", "where", "discord", "sb", "tell", "tellraw", "team", "teammsg", "seed", "msg", "say", "whitelist", "help"};
+        for (String check : isNotValid) {
+            if (check.equalsIgnoreCase(command)) {
+                return false;
+            }
+        }
+        return !command.equals("");
+    }
+
     public static void stop(){
         process.shutdownNow();
         chatBridge = false;
