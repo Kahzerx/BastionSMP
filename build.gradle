@@ -23,12 +23,12 @@ dependencies {
 	// You may need to force-disable transitiveness on them.
 
 	compile 'org.slf4j:slf4j-nop:1.7.25'
-	compile 'net.dv8tion:JDA:4.1.1_126'
+	compile 'net.dv8tion:JDA:4.2.0_214'
 
 	include 'org.slf4j:slf4j-nop:1.7.25'
-	include 'net.dv8tion:JDA:4.1.1_126'
+	include 'net.dv8tion:JDA:4.2.0_214'
 	include 'org.slf4j:slf4j-api:1.7.25'
-	include 'com.neovisionaries:nv-websocket-client:2.9'
+	include 'com.neovisionaries:nv-websocket-client:2.10'
 	include 'com.squareup.okhttp3:okhttp:3.13.0'
 	include 'com.squareup.okio:okio:1.17.2'
 	include 'club.minnced:opus-java:1.0.4'

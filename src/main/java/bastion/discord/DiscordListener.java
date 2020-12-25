@@ -185,7 +185,7 @@ public class DiscordListener extends ListenerAdapter {
     }
 
     private static boolean shouldFeedback(String command) {
-        String[] isNotValid = {"here", "where", "discord", "sb", "tell", "tellraw", "team", "teammsg", "seed", "msg", "say", "whitelist", "help"};
+        String[] isNotValid = {"here", "where", "discord", "sb", "tell", "tellraw", "team", "teammsg", "seed", "msg", "say", "whitelist", "help", "ping", };
         for (String check : isNotValid) {
             if (check.equalsIgnoreCase(command)) {
                 return false;
@@ -202,7 +202,7 @@ public class DiscordListener extends ListenerAdapter {
     public static EmbedBuilder generateEmbed(StringBuilder msg, int n) {
         try {
             final EmbedBuilder emb = new EmbedBuilder();
-            emb.setColor(Color.decode("#2ECC71"));
+            emb.setColor(n != 0 ? Color.decode("#2ECC71") : Color.decode("#d31b1e"));
             if (n > 1) emb.setDescription("**" + n + " jugadores conectados** \n\n" + msg.toString());
             else emb.setDescription(n == 0 ? "**No hay nadie online :(**" : "**" + n + " jugador conectado** \n\n" + msg.toString());
             return emb;
