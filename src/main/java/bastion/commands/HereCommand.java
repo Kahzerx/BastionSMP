@@ -1,6 +1,6 @@
-package bastion.here;
+package bastion.commands;
 
-import bastion.Bastion;
+import bastion.utils.BastionUtils;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.entity.effect.StatusEffectInstance;
@@ -24,10 +24,10 @@ public class HereCommand {
     public static int sendLocation(ServerCommandSource source) throws CommandSyntaxException {
         if (source.getPlayer() != null){
             ServerPlayerEntity player = source.getPlayer();
-            String playerPos = Bastion.formatCoords(source.getPlayer().getPos().x, source.getPlayer().getPos().y, source.getPlayer().getPos().z);
-            String playerNetherPos = Bastion.formatCoords(source.getPlayer().getPos().x / 8, source.getPlayer().getPos().y / 8, source.getPlayer().getPos().z / 8);
-            String playerOverworldPos = Bastion.formatCoords(source.getPlayer().getPos().x * 8, source.getPlayer().getPos().y * 8, source.getPlayer().getPos().z * 8);
-            String dimension = Bastion.getDimensionWithColor(player);
+            String playerPos = BastionUtils.formatCoords(source.getPlayer().getPos().x, source.getPlayer().getPos().y, source.getPlayer().getPos().z);
+            String playerNetherPos = BastionUtils.formatCoords(source.getPlayer().getPos().x / 8, source.getPlayer().getPos().y / 8, source.getPlayer().getPos().z / 8);
+            String playerOverworldPos = BastionUtils.formatCoords(source.getPlayer().getPos().x * 8, source.getPlayer().getPos().y * 8, source.getPlayer().getPos().z * 8);
+            String dimension = BastionUtils.getDimensionWithColor(player);
             if (player.world.getRegistryKey().getValue().equals(World.OVERWORLD.getValue())) source.getMinecraftServer().getPlayerManager().broadcastChatMessage(new LiteralText(Formatting.YELLOW + source.getPlayer().getName().asString() + " " + dimension + " " + playerPos + " -> " + Formatting.RED + "[Nether] " + playerNetherPos), MessageType.CHAT, Util.NIL_UUID);
             else if (player.world.getRegistryKey().getValue().equals(World.NETHER.getValue())) source.getMinecraftServer().getPlayerManager().broadcastChatMessage(new LiteralText(Formatting.YELLOW + source.getPlayer().getName().asString() + " " + dimension + " " + playerPos + " -> " + Formatting.GREEN + "[Overworld] " + playerOverworldPos), MessageType.CHAT, Util.NIL_UUID);
             else if (player.world.getRegistryKey().getValue().equals(World.END.getValue())) source.getMinecraftServer().getPlayerManager().broadcastChatMessage(new LiteralText(Formatting.YELLOW + source.getPlayer().getName().asString() + " " + dimension + " " + playerPos), MessageType.CHAT, Util.NIL_UUID);

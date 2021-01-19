@@ -1,6 +1,7 @@
 package bastion.mixins;
 
-import bastion.discord.DiscordListener;
+import bastion.Bastion;
+import bastion.discord.utils.DiscordListener;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
@@ -16,6 +17,6 @@ public class BastionPlayerNetworkHandlerOnPlayerLeftMixin {
     public ServerPlayerEntity player;
     @Inject(method = "onDisconnected", at = @At("RETURN"))
     private void onPlayerLeft(Text reason, CallbackInfo ci){
-        if (DiscordListener.chatBridge) DiscordListener.sendMessage(":arrow_left: **" + player.getName().getString().replace("_", "\\_") + " left the game!**");
+        if (DiscordListener.chatBridge) DiscordListener.sendMessage(Bastion.config.chatBridgePrefix + " :arrow_left: **" + player.getName().getString().replace("_", "\\_") + " left the game!**");
     }
 }

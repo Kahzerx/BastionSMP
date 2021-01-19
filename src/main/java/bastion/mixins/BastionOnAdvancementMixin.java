@@ -1,6 +1,7 @@
 package bastion.mixins;
 
-import bastion.discord.DiscordListener;
+import bastion.Bastion;
+import bastion.discord.utils.DiscordListener;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.PlayerAdvancementTracker;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -22,7 +23,7 @@ public class BastionOnAdvancementMixin {
     public void onAdvancement(Advancement advancement, String criterionName, CallbackInfoReturnable<Boolean> cir){
         if (DiscordListener.chatBridge){
             Text text = new TranslatableText("chat.type.advancement." + Objects.requireNonNull(advancement.getDisplay()).getFrame().getId(), this.owner.getDisplayName(), advancement.toHoverableText());
-            DiscordListener.sendMessage(":confetti_ball: **" + text.getString().replace("_", "\\_") + "**");
+            DiscordListener.sendMessage(Bastion.config.chatBridgePrefix + " :confetti_ball: **" + text.getString().replace("_", "\\_") + "**");
         }
     }
 }

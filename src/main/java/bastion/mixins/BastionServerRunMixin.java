@@ -1,7 +1,8 @@
 package bastion.mixins;
 
-import bastion.discord.DiscordFileManager;
-import bastion.discord.DiscordListener;
+import bastion.Bastion;
+import bastion.discord.utils.DiscordListener;
+import bastion.utils.FileManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.LevelStorage;
 import org.spongepowered.asm.mixin.Final;
@@ -18,19 +19,20 @@ public abstract class BastionServerRunMixin {
     @Inject(method = "runServer", at = @At("HEAD"))
     public void run (CallbackInfo ci){
         try {
-            String[] result = DiscordFileManager.readFile();
-            if (!result[0].equals("") && !result[1].equals("") && !result[2].equals("")) {
-                if (result[2].equals("true")) {
+            FileManager.initializeYaml();  // Cargar la configuración del archivo .yaml
+            if (Bastion.config.chatChannelId != 0 && !Bastion.config.discordToken.equals("")) {
+                if (Bastion.config.isRunning) {  // Iniciar el bot de discord.
                     try {
-                        DiscordListener.connect((MinecraftServer) (Object) this, result[0], result[1]);
+                        DiscordListener.connect((MinecraftServer) (Object) this, Bastion.config.discordToken, String.valueOf(Bastion.config.chatChannelId));
                     } catch (Exception e) {
-                        System.out.println(e);
+                        e.printStackTrace();
                     }
                 }
             }
         }
         catch (Exception e){
             System.out.println("config file not created");
+            e.printStackTrace();
         }
     }
 

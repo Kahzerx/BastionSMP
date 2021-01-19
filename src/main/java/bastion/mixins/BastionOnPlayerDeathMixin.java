@@ -1,7 +1,8 @@
 package bastion.mixins;
 
 import bastion.Bastion;
-import bastion.discord.DiscordListener;
+import bastion.discord.utils.DiscordListener;
+import bastion.utils.BastionUtils;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
@@ -23,8 +24,8 @@ public abstract class BastionOnPlayerDeathMixin extends PlayerEntity {
     @Inject(method = "onDeath", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/packet/s2c/play/CombatEventS2CPacket;<init>(Lnet/minecraft/entity/damage/DamageTracker;Lnet/minecraft/network/packet/s2c/play/CombatEventS2CPacket$Type;Lnet/minecraft/text/Text;)V", ordinal = 0))
     public void onPlayerDies(DamageSource source, CallbackInfo ci) {
         if (DiscordListener.chatBridge){
-            DiscordListener.sendMessage(":skull_crossbones: **" + this.getDamageTracker().getDeathMessage().getString().replace("_", "\\_") + "**");
+            DiscordListener.sendMessage(Bastion.config.chatBridgePrefix + " :skull_crossbones: **" + this.getDamageTracker().getDeathMessage().getString().replace("_", "\\_") + "**");
         }
-        this.sendMessage(new LiteralText("RIP ;( : " + Bastion.getDimensionWithColor(this.world) + Bastion.formatCoords(this.getPos().x, this.getPos().y, this.getPos().z)), false);
+        this.sendMessage(new LiteralText("RIP ;( : " + BastionUtils.getDimensionWithColor(this.world) + BastionUtils.formatCoords(this.getPos().x, this.getPos().y, this.getPos().z)), false);
     }
 }
