@@ -2,13 +2,19 @@ package bastion.commands;
 
 import bastion.Bastion;
 import bastion.discord.utils.DiscordListener;
+import bastion.utils.BastionUtils;
+import com.google.common.collect.Sets;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.LongArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
+import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.LiteralText;
+
+import java.util.Collection;
+import java.util.Set;
 
 import static net.minecraft.server.command.CommandManager.literal;
 
@@ -36,6 +42,8 @@ public class DiscordCommand {
                         .then(CommandManager.literal("add")
                                 .then(CommandManager.argument("chatID", LongArgumentType.longArg())
                                         .executes(context -> addId(context.getSource(), 0, LongArgumentType.getLong(context, "chatID")))))
+                        .then(CommandManager.literal("list")
+                                .executes(context -> getWhitelistChat(context.getSource())))
                         .then(CommandManager.literal("remove")
                                 .then(CommandManager.argument("chatID", LongArgumentType.longArg())
                                         .executes(context -> removeId(context.getSource(), 0, LongArgumentType.getLong(context, "chatID"))))))
@@ -43,12 +51,21 @@ public class DiscordCommand {
                         .then(CommandManager.literal("add")
                                 .then(CommandManager.argument("chatID", LongArgumentType.longArg())
                                         .executes(context -> addId(context.getSource(), 1, LongArgumentType.getLong(context, "chatID")))))
+                        .then(CommandManager.literal("list")
+                                .executes(context -> getAllowedChat(context.getSource())))
                         .then(CommandManager.literal("remove")
                                 .then(CommandManager.argument("chatID", LongArgumentType.longArg())
                                         .executes(context -> removeId(context.getSource(), 1, LongArgumentType.getLong(context, "chatID"))))))
-                .then(CommandManager.literal("commandWhitelist"))
+                .then(CommandManager.literal("commandWhitelist")
                         .then(CommandManager.literal("add")
-                        .then(CommandManager.literal("remove")))
+                                .then(CommandManager.argument("command", StringArgumentType.string())
+                                        .executes(context -> addCommand(context.getSource(), StringArgumentType.getString(context, "command")))))
+                        .then(CommandManager.literal("list")
+                                        .executes(context -> getCommandWhitelist(context.getSource())))
+                        .then(CommandManager.literal("remove")
+                                .then(CommandManager.argument("command", StringArgumentType.string())
+                                        .suggests((c, b) -> CommandSource.suggestMatching(commandWhitelist(), b))
+                                        .executes(context -> removeCommand(context.getSource(), StringArgumentType.getString(context, "command"))))))
                 .executes(context -> info(context.getSource())));
     }
 
@@ -97,7 +114,7 @@ public class DiscordCommand {
         return 1;
     }
 
-    private static int info(ServerCommandSource src){
+    private static int info(ServerCommandSource src) {
         if (DiscordListener.chatBridge) src.sendFeedback(new LiteralText("Chat bridge is currently on!"), false);
         else src.sendFeedback(new LiteralText("Chat bridge is currently off!"), false);
 
@@ -160,16 +177,57 @@ public class DiscordCommand {
                 src.sendFeedback(new LiteralText("This ID doesn't exist."), false);
             } else {
                 Bastion.config.removeWhitelist(chatID);
-                src.sendFeedback(new LiteralText("ID deleted."), false);
+                src.sendFeedback(new LiteralText("ID removed."), false);
             }
         } else if (id == 1) {
             if (!Bastion.config.allowedChat.contains(chatID)) {
                 src.sendFeedback(new LiteralText("This ID doesn't exist."), false);
             } else {
                 Bastion.config.removeAllowed(chatID);
-                src.sendFeedback(new LiteralText("ID deleted."), false);
+                src.sendFeedback(new LiteralText("ID removed."), false);
             }
         }
         return 1;
+    }
+
+    private static int addCommand(ServerCommandSource src, String command) {
+        if (Bastion.config.commandWhitelist.contains(command)) {
+            src.sendFeedback(new LiteralText("This command is already whitelisted."), false);
+        } else {
+            Bastion.config.addCommand(command);
+            src.sendFeedback(new LiteralText("Command added."), false);
+        }
+        return 1;
+    }
+
+    private static int removeCommand(ServerCommandSource src, String command) {
+        if (!Bastion.config.commandWhitelist.contains(command)) {
+            src.sendFeedback(new LiteralText("This command wasn't whitelisted."), false);
+        } else {
+            Bastion.config.removeCommand(command);
+            src.sendFeedback(new LiteralText("Command removed."), false);
+        }
+        return 1;
+    }
+
+    private static int getCommandWhitelist(ServerCommandSource src) {
+        src.sendFeedback(new LiteralText("" + Bastion.config.commandWhitelist), false);
+        return 1;
+    }
+
+    private static int getWhitelistChat(ServerCommandSource src) {
+        src.sendFeedback(new LiteralText(Bastion.config.whitelistChat.toString()), false);
+        return 1;
+    }
+
+    private static int getAllowedChat(ServerCommandSource src) {
+        src.sendFeedback(new LiteralText(Bastion.config.allowedChat.toString()), false);
+        return 1;
+    }
+
+    public static Collection<String> commandWhitelist() {
+        Set<String> commands = Sets.newLinkedHashSet();
+        commands.addAll(Bastion.config.commandWhitelist);
+        return commands;
     }
 }

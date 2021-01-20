@@ -1,11 +1,8 @@
 package bastion.settings;
 
 import bastion.utils.FileManager;
-import com.google.common.collect.Sets;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 public class BastionConfig {
     public BastionConfig(String discordToken, String chatBridgePrefix, long chatChannelId, boolean isRunning, boolean adminLog, long adminChat, List<Long> whitelistChat, List<Long> allowedChat, List<String> commandWhitelist) {
@@ -20,7 +17,7 @@ public class BastionConfig {
         this.commandWhitelist = commandWhitelist;
     }
 
-    public BastionConfig() {}
+    public BastionConfig() {}  // Sí, es necesario smh.
 
     public String discordToken;
     public String chatBridgePrefix;
@@ -74,6 +71,16 @@ public class BastionConfig {
 
     public void removeAllowed(long chatID) {
         allowedChat.remove(chatID);
+        FileManager.updateFile();
+    }
+
+    public void addCommand(String command) {
+        commandWhitelist.add(command);
+        FileManager.updateFile();
+    }
+
+    public void removeCommand(String command) {
+        commandWhitelist.remove(command);
         FileManager.updateFile();
     }
 }
