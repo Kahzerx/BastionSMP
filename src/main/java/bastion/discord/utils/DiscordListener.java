@@ -57,7 +57,9 @@ public class DiscordListener extends ListenerAdapter {
     @Override
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
         if (chatBridge){
-            if (event.getAuthor().isBot()) return;
+            if (event.getAuthor().isBot()) {
+                if (event.getAuthor().getIdLong() != process.getSelfUser().getIdLong()) return;
+            }
             if (event.getMessage().getContentDisplay().equals("")) return;
             if (event.getMessage().getContentRaw().equals("")) return;
 
@@ -84,12 +86,16 @@ public class DiscordListener extends ListenerAdapter {
             }
 
             else if (event.getChannel().getIdLong() == (Bastion.config.chatChannelId)) {
-                DiscordUtils.sendMessage(event, server);
+                if (event.getAuthor().getIdLong() == process.getSelfUser().getIdLong()) {  // A discordMessage
+                    DiscordUtils.sendMessageCrossServer(event, server);
+                } else {
+                    DiscordUtils.sendMessage(event, server);
+                }
             }
         }
     }
 
-    public static void sendMessage(String msg){
+    public static void sendMessage(String msg) {
         if (chatBridge){
             try {
                 TextChannel ch = process.getTextChannelById(channelId);

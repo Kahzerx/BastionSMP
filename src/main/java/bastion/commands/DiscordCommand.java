@@ -2,7 +2,6 @@ package bastion.commands;
 
 import bastion.Bastion;
 import bastion.discord.utils.DiscordListener;
-import bastion.utils.BastionUtils;
 import com.google.common.collect.Sets;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.BoolArgumentType;
