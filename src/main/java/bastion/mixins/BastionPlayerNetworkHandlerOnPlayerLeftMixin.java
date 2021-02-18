@@ -17,6 +17,6 @@ public class BastionPlayerNetworkHandlerOnPlayerLeftMixin {
     public ServerPlayerEntity player;
     @Inject(method = "onDisconnected", at = @At("RETURN"))
     private void onPlayerLeft(Text reason, CallbackInfo ci){
-        if (DiscordListener.chatBridge) DiscordListener.sendMessage(Bastion.config.chatBridgePrefix + " :arrow_left: **" + player.getName().getString().replace("_", "\\_") + " left the game!**");
+        if (DiscordListener.chatBridge) DiscordListener.sendMessage(Bastion.bastionConfig.chatBridgePrefix + " :arrow_left: **" + player.getName().getString().replace("_", "\\_") + " left the game!**");
     }
 }

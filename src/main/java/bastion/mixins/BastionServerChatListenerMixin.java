@@ -17,8 +17,8 @@ public class BastionServerChatListenerMixin {
 
     @Inject(method = "onGameMessage", at = @At("RETURN"))
     public void chatMessage(ChatMessageC2SPacket packet, CallbackInfo ci) {
-        if (!packet.getChatMessage().startsWith("/")) DiscordListener.sendMessage(Bastion.config.chatBridgePrefix + " `<" + player.getName().getString() + ">` " + packet.getChatMessage());
-        else if (Bastion.config.adminLog) {
+        if (!packet.getChatMessage().startsWith("/")) DiscordListener.sendMessage(Bastion.bastionConfig.chatBridgePrefix + " `<" + player.getName().getString() + ">` " + packet.getChatMessage());
+        else if (Bastion.bastionConfig.adminLog) {
             DiscordListener.sendMessageAdminChat(player.getName().getString(), packet.getChatMessage());
         }
     }

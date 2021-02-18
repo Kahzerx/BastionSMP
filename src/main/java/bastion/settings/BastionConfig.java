@@ -5,37 +5,37 @@ import bastion.utils.FileManager;
 import java.util.List;
 
 public class BastionConfig {
-    public BastionConfig(String discordToken, String chatBridgePrefix, long chatChannelId, boolean isRunning, boolean adminLog, long adminChat, List<Long> whitelistChat, List<Long> allowedChat, List<String> commandWhitelist) {
+    public String discordToken;
+    public String chatBridgePrefix;
+    public long chatChannelID;
+    public boolean isRunning;
+    public boolean adminLog;
+    public long adminChatID;
+    public List<Long> whitelistChat;
+    public List<Long> allowedChat;
+    public List<String> commandWhitelist;
+
+    public BastionConfig(String discordToken, String chatBridgePrefix, long chatChannelID,
+                         boolean isRunning, boolean adminLog, long adminChatID, List<Long> whitelistChat,
+                         List<Long> allowedChat, List<String> commandWhitelist) {
         this.discordToken = discordToken;
         this.chatBridgePrefix = chatBridgePrefix;
-        this.chatChannelId = chatChannelId;
+        this.chatChannelID = chatChannelID;
         this.isRunning = isRunning;
         this.adminLog = adminLog;
-        this.adminChat = adminChat;
+        this.adminChatID = adminChatID;
         this.whitelistChat = whitelistChat;
         this.allowedChat = allowedChat;
         this.commandWhitelist = commandWhitelist;
     }
-
-    public BastionConfig() {}  // Sí, es necesario smh.
-
-    public String discordToken;
-    public String chatBridgePrefix;
-    public long chatChannelId;
-    public boolean isRunning;
-    public boolean adminLog;
-    public long adminChat;
-    public List<Long> whitelistChat;
-    public List<Long> allowedChat;
-    public List<String> commandWhitelist;
 
     public void setDiscordToken(String discordToken) {
         this.discordToken = discordToken;
         FileManager.updateFile();
     }
 
-    public void setChatChannelId(long chatChannelId) {
-        this.chatChannelId = chatChannelId;
+    public void setChatChannelID(long chatChannelID) {
+        this.chatChannelID = chatChannelID;
         FileManager.updateFile();
     }
 
@@ -44,9 +44,21 @@ public class BastionConfig {
         FileManager.updateFile();
     }
 
+    public long getChatChannelID() {
+        return chatChannelID;
+    }
+
+    public String getDiscordToken() {
+        return discordToken;
+    }
+
     public void setChatBridgePrefix(String chatBridgePrefix) {
         this.chatBridgePrefix = chatBridgePrefix;
         FileManager.updateFile();
+    }
+
+    public long getAdminChatID() {
+        return adminChatID;
     }
 
     public void setAdminLog(boolean adminLog) {
@@ -54,33 +66,56 @@ public class BastionConfig {
         FileManager.updateFile();
     }
 
-    public void addWhitelist(long chatID) {
-        whitelistChat.add(chatID);
+    public void addWhitelist(long ID) {
+        this.whitelistChat.add(ID);
         FileManager.updateFile();
     }
 
-    public void addAllowed(long chatID) {
-        allowedChat.add(chatID);
+    public void removeWhitelist(long ID) {
+        this.whitelistChat.remove(ID);
         FileManager.updateFile();
     }
 
-    public void removeWhitelist(long chatID) {
-        whitelistChat.remove(chatID);
+    public void addAllowed(long ID) {
+        this.allowedChat.add(ID);
         FileManager.updateFile();
     }
 
-    public void removeAllowed(long chatID) {
-        allowedChat.remove(chatID);
+    public void removeAllowed(long ID) {
+        this.allowedChat.remove(ID);
         FileManager.updateFile();
     }
 
-    public void addCommand(String command) {
-        commandWhitelist.add(command);
+    public void addCommand(String cmd) {
+        this.commandWhitelist.add(cmd);
         FileManager.updateFile();
     }
 
-    public void removeCommand(String command) {
-        commandWhitelist.remove(command);
+    public void removeCommand(String cmd) {
+        this.commandWhitelist.remove(cmd);
         FileManager.updateFile();
+    }
+
+    public List<Long> getWhitelistChat() {
+        return whitelistChat;
+    }
+
+    public List<Long> getAllowedChat() {
+        return allowedChat;
+    }
+
+    @Override
+    public String toString() {
+        return "Config{" +
+                "discordToken='" + discordToken + '\'' +
+                ", chatBridgePrefix='" + chatBridgePrefix + '\'' +
+                ", chatChannelID=" + chatChannelID +
+                ", isRunning=" + isRunning +
+                ", adminLog=" + adminLog +
+                ", adminChatID=" + adminChatID +
+                ", whitelistChat=" + whitelistChat +
+                ", allowedChat=" + allowedChat +
+                ", commandWhitelist=" + commandWhitelist +
+                '}';
     }
 }

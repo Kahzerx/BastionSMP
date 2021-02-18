@@ -2,20 +2,19 @@ package bastion.utils;
 
 import bastion.Bastion;
 import bastion.settings.BastionConfig;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FileManager {
-    public static String yamlFile = "config.yaml";
+    public static String jsonConfigFile = "config.json";
 
-    public static void initializeYaml() {
-        File file = new File(yamlFile);
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
+    public static void initializeJson() {
+        File file = new File(jsonConfigFile);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
         if (!file.exists()) {
             try {
                 // Se ejecuta al crearse el archivo a modo de helper.
@@ -29,15 +28,25 @@ public class FileManager {
                 commandWhitelist.add("commands_you_dont_want");
                 commandWhitelist.add("to_admin_log");
                 commandWhitelist.add("fill");
-                Bastion.config = new BastionConfig("", "", 0, false, false, 0L, whitelistChat, allowedChat, commandWhitelist);
-                mapper.writeValue(file, Bastion.config);
+
+                Bastion.bastionConfig = new BastionConfig("", "", 0, false, false,
+                        0, whitelistChat, allowedChat, commandWhitelist);
+                FileWriter writer = new FileWriter(file);
+                gson.toJson(Bastion.bastionConfig, writer);
+                writer.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         else {
             try {
-                Bastion.config = mapper.readValue(file, BastionConfig.class);
+                StringBuilder result = new StringBuilder();
+                BufferedReader br = new BufferedReader(new FileReader(file));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    result.append(line);
+                }
+                Bastion.bastionConfig = gson.fromJson(result.toString(), BastionConfig.class);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -45,9 +54,11 @@ public class FileManager {
     }
 
     public static void updateFile() {
-        ObjectMapper mapper = new ObjectMapper(new YAMLFactory());
         try {
-            mapper.writeValue(new File(yamlFile), Bastion.config);
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            FileWriter writer = new FileWriter(jsonConfigFile);
+            gson.toJson(Bastion.bastionConfig, writer);
+            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

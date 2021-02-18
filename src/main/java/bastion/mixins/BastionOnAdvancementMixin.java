@@ -23,7 +23,7 @@ public class BastionOnAdvancementMixin {
     public void onAdvancement(Advancement advancement, String criterionName, CallbackInfoReturnable<Boolean> cir){
         if (DiscordListener.chatBridge){
             Text text = new TranslatableText("chat.type.advancement." + Objects.requireNonNull(advancement.getDisplay()).getFrame().getId(), this.owner.getDisplayName(), advancement.toHoverableText());
-            DiscordListener.sendMessage(Bastion.config.chatBridgePrefix + " :confetti_ball: **" + text.getString().replace("_", "\\_") + "**");
+            DiscordListener.sendMessage(Bastion.bastionConfig.chatBridgePrefix + " :confetti_ball: **" + text.getString().replace("_", "\\_") + "**");
         }
     }
 }

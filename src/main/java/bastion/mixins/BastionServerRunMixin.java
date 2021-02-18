@@ -19,11 +19,11 @@ public abstract class BastionServerRunMixin {
     @Inject(method = "runServer", at = @At("HEAD"))
     public void run (CallbackInfo ci){
         try {
-            FileManager.initializeYaml();  // Cargar la configuración del archivo .yaml
-            if (Bastion.config.chatChannelId != 0 && !Bastion.config.discordToken.equals("")) {
-                if (Bastion.config.isRunning) {  // Iniciar el bot de discord.
+            FileManager.initializeJson();  // Cargar la configuración del archivo .yaml
+            if (Bastion.bastionConfig.getChatChannelID() != 0 && !Bastion.bastionConfig.discordToken.equals("")) {
+                if (Bastion.bastionConfig.isRunning) {  // Iniciar el bot de discord.
                     try {
-                        DiscordListener.connect((MinecraftServer) (Object) this, Bastion.config.discordToken, String.valueOf(Bastion.config.chatChannelId));
+                        DiscordListener.connect((MinecraftServer) (Object) this, Bastion.bastionConfig.discordToken, String.valueOf(Bastion.bastionConfig.getChatChannelID()));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

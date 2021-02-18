@@ -10,7 +10,7 @@ import net.minecraft.server.command.ServerCommandSource;
 
 public class Bastion {
 
-    public static BastionConfig config;
+    public static BastionConfig bastionConfig;
 
     public static void registerCommands(CommandDispatcher<ServerCommandSource> dispatcher){
         DiscordCommand.register(dispatcher);

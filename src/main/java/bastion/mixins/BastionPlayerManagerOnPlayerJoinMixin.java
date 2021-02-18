@@ -14,6 +14,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class BastionPlayerManagerOnPlayerJoinMixin {
     @Inject(method = "onPlayerConnect", at = @At("RETURN"))
     private void onPlayerJoin(ClientConnection connection, ServerPlayerEntity player, CallbackInfo ci) {
-        if (DiscordListener.chatBridge) DiscordListener.sendMessage(Bastion.config.chatBridgePrefix + " :arrow_right: **" + player.getName().getString().replace("_", "\\_") + " joined the game!**");
+        if (DiscordListener.chatBridge) DiscordListener.sendMessage(Bastion.bastionConfig.chatBridgePrefix + " :arrow_right: **" + player.getName().getString().replace("_", "\\_") + " joined the game!**");
     }
 }

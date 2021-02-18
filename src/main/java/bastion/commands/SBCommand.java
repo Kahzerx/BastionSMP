@@ -135,20 +135,20 @@ public class SBCommand {
 
 			Stat<?> finalStat = null;
 
-			if(type.equalsIgnoreCase("broken")) {
+			if (type.equalsIgnoreCase("broken")) {
 				finalStat = Stats.BROKEN.getOrCreateStat(item);
-			} else if(type.equalsIgnoreCase("crafted")) {
+			} else if (type.equalsIgnoreCase("crafted")) {
 				finalStat = Stats.CRAFTED.getOrCreateStat(item);
-			} else if(type.equalsIgnoreCase("mined")) {
+			} else if (type.equalsIgnoreCase("mined")) {
 				finalStat = Stats.MINED.getOrCreateStat(Block.getBlockFromItem(item));
-			} else if(type.equalsIgnoreCase("used")) {
+			} else if (type.equalsIgnoreCase("used")) {
 				finalStat = Stats.USED.getOrCreateStat(item);
 			}
 
 			String playerName;
 			int value;
 
-			if(player != null) {
+			if (player != null) {
 				value = player.getStatHandler().getStat(finalStat);
 				playerName = player.getEntityName();
 			} else {
@@ -157,22 +157,18 @@ public class SBCommand {
 
 				GameProfile gameProfile = server.getUserCache().getByUuid(uuid);
 
-				if(gameProfile != null) {
+				if (gameProfile != null) {
 					playerName = gameProfile.getName();
 				} else {
 					continue;
 				}
 			}
 
-			if(value == 0) {
+			if (value == 0) {
 				continue;
 			}
-
 			ScoreboardPlayerScore scoreboardPlayerScore = scoreboard.getPlayerScore(playerName, scoreboardObjective);
 			scoreboardPlayerScore.setScore(value);
-
 		}
-
 	}
-
 }

@@ -23,7 +23,7 @@ public class DiscordUtils {
         try {
             final EmbedBuilder emb = new EmbedBuilder();
             emb.setColor(n != 0 ? Color.decode("#2ECC71") : Color.decode("#d31b1e"));
-            emb.setTitle(Bastion.config.chatBridgePrefix.replace("`", ""));
+            emb.setTitle(Bastion.bastionConfig.chatBridgePrefix.replace("`", ""));
             if (n > 1) emb.setDescription("**" + n + " jugadores conectados** \n\n" + msg.toString());
             else emb.setDescription(n == 0 ? "**No hay nadie online :(**" : "**" + n + " jugador conectado** \n\n" + msg.toString());
             return emb;
@@ -39,13 +39,13 @@ public class DiscordUtils {
         int id = permission.getId();
         switch (id) {
             case 0:
-                shouldWork = Bastion.config.adminChat == chatId;
+                shouldWork = Bastion.bastionConfig.getAdminChatID() == chatId;
                 break;
             case 1:
-                shouldWork = Bastion.config.whitelistChat.contains(chatId);
+                shouldWork = Bastion.bastionConfig.getWhitelistChat().contains(chatId);
                 break;
             case 2:
-                shouldWork = Bastion.config.allowedChat.contains(chatId);
+                shouldWork = Bastion.bastionConfig.getAllowedChat().contains(chatId);
                 break;
         }
         return shouldWork;
@@ -73,9 +73,9 @@ public class DiscordUtils {
     }
 
     public static void sendMessageCrossServer(MessageReceivedEvent event, MinecraftServer server) {
-        String msg = "[" + Bastion.config.chatBridgePrefix + "] " + event.getMessage().getContentDisplay().replace("`", "");
+        String msg = "[" + Bastion.bastionConfig.chatBridgePrefix + "] " + event.getMessage().getContentDisplay().replace("`", "");
         msg = msg.substring(msg.indexOf(" ") + 1);
-        if (msg.split(" ")[0].equals(Bastion.config.chatBridgePrefix.replace("`", ""))) return;  // MSG del mismo server.
+        if (msg.split(" ")[0].equals(Bastion.bastionConfig.chatBridgePrefix.replace("`", ""))) return;  // MSG del mismo server.
         msg = msg.replaceAll("\\:([^\\}]+)\\:", "");
         msg = msg.replace("*", "");
         msg = msg.replace("\\", "");

@@ -73,8 +73,8 @@ public class DiscordCommand {
             src.sendFeedback(new LiteralText("Please stop the bot before you make any changes"), false);
         }
         else{
-            Bastion.config.setDiscordToken(token);
-            Bastion.config.setChatChannelId(channelId);
+            Bastion.bastionConfig.setDiscordToken(token);
+            Bastion.bastionConfig.setChatChannelID(channelId);
             src.sendFeedback(new LiteralText("Done!"), false);
         }
         return 1;
@@ -83,7 +83,7 @@ public class DiscordCommand {
     private static int stop(ServerCommandSource src){
         if (DiscordListener.chatBridge){
             DiscordListener.stop();
-            Bastion.config.setRunning(false);
+            Bastion.bastionConfig.setRunning(false);
             src.sendFeedback(new LiteralText("Discord integration has stopped"), false);
         }
         else{
@@ -94,9 +94,9 @@ public class DiscordCommand {
 
     private static int start(ServerCommandSource src){
         if (!DiscordListener.chatBridge){
-            if (Bastion.config.chatChannelId != 0 && !Bastion.config.discordToken.equals("")) {
+            if (Bastion.bastionConfig.getChatChannelID() != 0 && !Bastion.bastionConfig.discordToken.equals("")) {
                 try {
-                    DiscordListener.connect(src.getMinecraftServer(), Bastion.config.discordToken, String.valueOf(Bastion.config.chatChannelId));
+                    DiscordListener.connect(src.getMinecraftServer(), Bastion.bastionConfig.getDiscordToken(), String.valueOf(Bastion.bastionConfig.getChatChannelID()));
                     src.sendFeedback(new LiteralText("Discord integration is running"), false);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -121,31 +121,31 @@ public class DiscordCommand {
     }
 
     private static int getPrefix(ServerCommandSource src) {
-        src.sendFeedback(new LiteralText(Bastion.config.chatBridgePrefix.equals("") ? "There is no prefix." : "The prefix is " + Bastion.config.chatBridgePrefix + "."), false);
+        src.sendFeedback(new LiteralText(Bastion.bastionConfig.chatBridgePrefix.equals("") ? "There is no prefix." : "The prefix is " + Bastion.bastionConfig.chatBridgePrefix + "."), false);
         return 1;
     }
 
     private static int setPrefix(ServerCommandSource src, String prefix) {
-        Bastion.config.setChatBridgePrefix(prefix);
+        Bastion.bastionConfig.setChatBridgePrefix(prefix);
         src.sendFeedback(new LiteralText("Prefix is now " + prefix + "."), false);
         return 1;
     }
 
     private static int getAdminLog(ServerCommandSource src) {
-        src.sendFeedback(new LiteralText(Bastion.config.adminLog ? "AdminLog is running." : "AdminLog is not running."), false);
+        src.sendFeedback(new LiteralText(Bastion.bastionConfig.adminLog ? "AdminLog is running." : "AdminLog is not running."), false);
         return 1;
     }
 
     private static int setAdminLog(ServerCommandSource src, boolean isRunning) {
-        if (Bastion.config.adminChat == 0L) {
+        if (Bastion.bastionConfig.getAdminChatID() == 0L) {
             src.sendFeedback(new LiteralText("Don't forget to set an adminChat too."), false);
         }
 
         if (isRunning) {
-            Bastion.config.setAdminLog(true);
+            Bastion.bastionConfig.setAdminLog(true);
             src.sendFeedback(new LiteralText("AdminLog is on."), false);
         } else {
-            Bastion.config.setAdminLog(false);
+            Bastion.bastionConfig.setAdminLog(false);
             src.sendFeedback(new LiteralText("AdminLog is off."), false);
         }
         return 1;
@@ -153,17 +153,17 @@ public class DiscordCommand {
 
     private static int addId(ServerCommandSource src, int id, long chatID) {
         if (id == 0) {
-            if (Bastion.config.whitelistChat.contains(chatID)) {
+            if (Bastion.bastionConfig.whitelistChat.contains(chatID)) {
                 src.sendFeedback(new LiteralText("This ID already exists."), false);
             } else {
-                Bastion.config.addWhitelist(chatID);
+                Bastion.bastionConfig.addWhitelist(chatID);
                 src.sendFeedback(new LiteralText("ID added."), false);
             }
         } else if (id == 1) {
-            if (Bastion.config.allowedChat.contains(chatID)) {
+            if (Bastion.bastionConfig.allowedChat.contains(chatID)) {
                 src.sendFeedback(new LiteralText("This ID already exists."), false);
             } else {
-                Bastion.config.addAllowed(chatID);
+                Bastion.bastionConfig.addAllowed(chatID);
                 src.sendFeedback(new LiteralText("ID added."), false);
             }
         }
@@ -172,17 +172,17 @@ public class DiscordCommand {
 
     private static int removeId(ServerCommandSource src, int id, long chatID) {
         if (id == 0) {
-            if (!Bastion.config.whitelistChat.contains(chatID)) {
+            if (!Bastion.bastionConfig.whitelistChat.contains(chatID)) {
                 src.sendFeedback(new LiteralText("This ID doesn't exist."), false);
             } else {
-                Bastion.config.removeWhitelist(chatID);
+                Bastion.bastionConfig.removeWhitelist(chatID);
                 src.sendFeedback(new LiteralText("ID removed."), false);
             }
         } else if (id == 1) {
-            if (!Bastion.config.allowedChat.contains(chatID)) {
+            if (!Bastion.bastionConfig.allowedChat.contains(chatID)) {
                 src.sendFeedback(new LiteralText("This ID doesn't exist."), false);
             } else {
-                Bastion.config.removeAllowed(chatID);
+                Bastion.bastionConfig.removeAllowed(chatID);
                 src.sendFeedback(new LiteralText("ID removed."), false);
             }
         }
@@ -190,43 +190,43 @@ public class DiscordCommand {
     }
 
     private static int addCommand(ServerCommandSource src, String command) {
-        if (Bastion.config.commandWhitelist.contains(command)) {
+        if (Bastion.bastionConfig.commandWhitelist.contains(command)) {
             src.sendFeedback(new LiteralText("This command is already whitelisted."), false);
         } else {
-            Bastion.config.addCommand(command);
+            Bastion.bastionConfig.addCommand(command);
             src.sendFeedback(new LiteralText("Command added."), false);
         }
         return 1;
     }
 
     private static int removeCommand(ServerCommandSource src, String command) {
-        if (!Bastion.config.commandWhitelist.contains(command)) {
+        if (!Bastion.bastionConfig.commandWhitelist.contains(command)) {
             src.sendFeedback(new LiteralText("This command wasn't whitelisted."), false);
         } else {
-            Bastion.config.removeCommand(command);
+            Bastion.bastionConfig.removeCommand(command);
             src.sendFeedback(new LiteralText("Command removed."), false);
         }
         return 1;
     }
 
     private static int getCommandWhitelist(ServerCommandSource src) {
-        src.sendFeedback(new LiteralText("" + Bastion.config.commandWhitelist), false);
+        src.sendFeedback(new LiteralText("" + Bastion.bastionConfig.commandWhitelist), false);
         return 1;
     }
 
     private static int getWhitelistChat(ServerCommandSource src) {
-        src.sendFeedback(new LiteralText(Bastion.config.whitelistChat.toString()), false);
+        src.sendFeedback(new LiteralText(Bastion.bastionConfig.whitelistChat.toString()), false);
         return 1;
     }
 
     private static int getAllowedChat(ServerCommandSource src) {
-        src.sendFeedback(new LiteralText(Bastion.config.allowedChat.toString()), false);
+        src.sendFeedback(new LiteralText(Bastion.bastionConfig.allowedChat.toString()), false);
         return 1;
     }
 
     public static Collection<String> commandWhitelist() {
         Set<String> commands = Sets.newLinkedHashSet();
-        commands.addAll(Bastion.config.commandWhitelist);
+        commands.addAll(Bastion.bastionConfig.commandWhitelist);
         return commands;
     }
 }

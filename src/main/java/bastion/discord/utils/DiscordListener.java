@@ -2,21 +2,14 @@ package bastion.discord.utils;
 
 import bastion.Bastion;
 import bastion.discord.commands.*;
-import com.mojang.authlib.GameProfile;
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.minecraft.network.MessageType;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.text.*;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Util;
 
 import javax.annotation.Nonnull;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DiscordListener extends ListenerAdapter {
@@ -43,11 +36,11 @@ public class DiscordListener extends ListenerAdapter {
         channelId = c;
         try{
             chatBridge = false;
-            Bastion.config.setRunning(false);
+            Bastion.bastionConfig.setRunning(false);
             process = JDABuilder.createDefault(token).addEventListeners(new DiscordListener(server)).build();
             process.awaitReady();
             chatBridge = true;
-            Bastion.config.setRunning(true);
+            Bastion.bastionConfig.setRunning(true);
         }
         catch (Exception e){
             e.printStackTrace();
@@ -85,7 +78,7 @@ public class DiscordListener extends ListenerAdapter {
                 list.execute(event, server);
             }
 
-            else if (event.getChannel().getIdLong() == (Bastion.config.chatChannelId)) {
+            else if (event.getChannel().getIdLong() == (Bastion.bastionConfig.getChatChannelID())) {
                 if (event.getAuthor().getIdLong() == process.getSelfUser().getIdLong()) {  // A discordMessage
                     DiscordUtils.sendMessageCrossServer(event, server);
                 } else {
@@ -110,7 +103,7 @@ public class DiscordListener extends ListenerAdapter {
     public static void sendMessageAdminChat(String user, String msg) {
         if (chatBridge && shouldFeedback(msg.split(" ")[0].substring(1))) {
             try {
-                TextChannel ch = process.getTextChannelById(Bastion.config.adminChat);
+                TextChannel ch = process.getTextChannelById(Bastion.bastionConfig.getAdminChatID());
                 if (ch != null) ch.sendMessage(String.format("`%s` ha ejecutado `%s`", user, msg)).queue();
             }
             catch (Exception e){
@@ -120,7 +113,7 @@ public class DiscordListener extends ListenerAdapter {
     }
 
     private static boolean shouldFeedback(String command) {
-        for (String check : Bastion.config.commandWhitelist) {
+        for (String check : Bastion.bastionConfig.commandWhitelist) {
             if (check.equalsIgnoreCase(command)) {
                 return false;
             }
