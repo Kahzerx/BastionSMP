@@ -25,8 +25,8 @@ public class HereCommand {
         if (source.getPlayer() != null){
             ServerPlayerEntity player = source.getPlayer();
             String playerPos = BastionUtils.formatCoords(source.getPlayer().getPos().x, source.getPlayer().getPos().y, source.getPlayer().getPos().z);
-            String playerNetherPos = BastionUtils.formatCoords(source.getPlayer().getPos().x / 8, source.getPlayer().getPos().y / 8, source.getPlayer().getPos().z / 8);
-            String playerOverworldPos = BastionUtils.formatCoords(source.getPlayer().getPos().x * 8, source.getPlayer().getPos().y * 8, source.getPlayer().getPos().z * 8);
+            String playerNetherPos = BastionUtils.formatCoords(source.getPlayer().getPos().x / 8, source.getPlayer().getPos().y, source.getPlayer().getPos().z / 8);
+            String playerOverworldPos = BastionUtils.formatCoords(source.getPlayer().getPos().x * 8, source.getPlayer().getPos().y, source.getPlayer().getPos().z * 8);
             String dimension = BastionUtils.getDimensionWithColor(player);
             if (player.world.getRegistryKey().getValue().equals(World.OVERWORLD.getValue())) source.getMinecraftServer().getPlayerManager().broadcastChatMessage(new LiteralText(Formatting.YELLOW + source.getPlayer().getName().asString() + " " + dimension + " " + playerPos + " -> " + Formatting.RED + "[Nether] " + playerNetherPos), MessageType.CHAT, Util.NIL_UUID);
             else if (player.world.getRegistryKey().getValue().equals(World.NETHER.getValue())) source.getMinecraftServer().getPlayerManager().broadcastChatMessage(new LiteralText(Formatting.YELLOW + source.getPlayer().getName().asString() + " " + dimension + " " + playerPos + " -> " + Formatting.GREEN + "[Overworld] " + playerOverworldPos), MessageType.CHAT, Util.NIL_UUID);
