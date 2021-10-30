@@ -39,19 +39,30 @@ public class SBCommand {
 		LiteralArgumentBuilder<ServerCommandSource> literalargumentbuilder = literal("sb")
 				.then(literal("broken")
 						.then(argument("item", ItemStackArgumentType.itemStack())
-								.executes(ctx -> showSidebar(ctx.getSource(), ItemStackArgumentType.getItemStackArgument(ctx, "item"), "broken"))))
+								.executes(ctx -> startThreadedShowSideBar(ctx.getSource(), ItemStackArgumentType.getItemStackArgument(ctx, "item"), "broken"))))
 				.then(literal("crafted")
 						.then(argument("item", ItemStackArgumentType.itemStack())
-								.executes(ctx -> showSidebar(ctx.getSource(), ItemStackArgumentType.getItemStackArgument(ctx, "item"), "crafted"))))
+								.executes(ctx -> startThreadedShowSideBar(ctx.getSource(), ItemStackArgumentType.getItemStackArgument(ctx, "item"), "crafted"))))
 				.then(literal("mined")
 						.then(argument("item", ItemStackArgumentType.itemStack())
-								.executes(ctx -> showSidebar(ctx.getSource(), ItemStackArgumentType.getItemStackArgument(ctx, "item"), "mined"))))
+								.executes(ctx -> startThreadedShowSideBar(ctx.getSource(), ItemStackArgumentType.getItemStackArgument(ctx, "item"), "mined"))))
 				.then(literal("used")
 						.then(argument("item", ItemStackArgumentType.itemStack())
-								.executes(ctx -> showSidebar(ctx.getSource(), ItemStackArgumentType.getItemStackArgument(ctx, "item"), "used"))))
+								.executes(ctx -> startThreadedShowSideBar(ctx.getSource(), ItemStackArgumentType.getItemStackArgument(ctx, "item"), "used"))))
+				.then(literal("picked_up")
+						.then(argument("item", ItemStackArgumentType.itemStack())
+								.executes(ctx -> startThreadedShowSideBar(ctx.getSource(), ItemStackArgumentType.getItemStackArgument(ctx, "item"), "picked_up"))))
+				.then(literal("dropped")
+						.then(argument("item", ItemStackArgumentType.itemStack())
+								.executes(ctx -> startThreadedShowSideBar(ctx.getSource(), ItemStackArgumentType.getItemStackArgument(ctx, "item"), "dropped"))))
 				.then(literal("remove")
 						.executes(ctx -> hideSidebar(ctx.getSource())));
 		dispatcher.register(literalargumentbuilder);
+	}
+
+	private static int startThreadedShowSideBar(ServerCommandSource source, ItemStackArgument item, String type) {
+		new Thread(() -> showSidebar(source, item, type)).start();
+		return 1;
 	}
 
 	public static int showSidebar(ServerCommandSource source, ItemStackArgument item, String type) {
@@ -108,12 +119,12 @@ public class SBCommand {
 		Text text;
 
 		if (scoreboard.getObjectiveForSlot(1) == null) {
-			text = new LiteralText("No hay ningun scoreboard para remover");
+			text = new LiteralText("No hay ningún scoreboard para remover");
 			assert entity != null;
 		} else {
 			scoreboard.setObjectiveSlot(1, null);
 			assert entity != null;
-			text = new LiteralText(entity.getEntityName() + " ha removido el scoreboard");
+			text = new LiteralText(entity.getEntityName() + " ha eliminado el scoreboard");
 		}
 		source.getMinecraftServer().getPlayerManager().broadcastChatMessage(text, MessageType.CHAT, entity.getUuid());
 		return Command.SINGLE_SUCCESS;
@@ -126,6 +137,7 @@ public class SBCommand {
 		File file = new File(((ServerWorldProperties)server.getOverworld().getLevelProperties()).getLevelName(), "stats");
 		File[] stats = file.listFiles();
 
+		assert stats != null;
 		for (File stat: stats) {
 			String fileName = stat.getName();
 			String uuidString = fileName.substring(0, fileName.lastIndexOf(".json"));
@@ -143,6 +155,10 @@ public class SBCommand {
 				finalStat = Stats.MINED.getOrCreateStat(Block.getBlockFromItem(item));
 			} else if (type.equalsIgnoreCase("used")) {
 				finalStat = Stats.USED.getOrCreateStat(item);
+			} else if (type.equalsIgnoreCase("picked_up")) {
+				finalStat = Stats.PICKED_UP.getOrCreateStat(item);
+			} else if (type.equalsIgnoreCase("dropped")) {
+				finalStat = Stats.DROPPED.getOrCreateStat(item);
 			}
 
 			String playerName;
