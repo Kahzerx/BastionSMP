@@ -65,7 +65,7 @@ public class SBCommand {
 		return 1;
 	}
 
-	public static int showSidebar(ServerCommandSource source, ItemStackArgument item, String type) {
+	public static void showSidebar(ServerCommandSource source, ItemStackArgument item, String type) {
 		Scoreboard scoreboard = source.getMinecraftServer().getScoreboard();
 		Item minecraftItem = item.getItem();
 		String objectiveName = type + "." + Item.getRawId(minecraftItem);
@@ -98,9 +98,6 @@ public class SBCommand {
 				text = new LiteralText("Ha ocurrido un error al momento de seleccionar un scoreboard, inténtelo de nuevo.").formatted(Formatting.RED);
 				assert entity != null;
 				source.getMinecraftServer().getPlayerManager().broadcastChatMessage(text, MessageType.CHAT, entity.getUuid());
-
-				return Command.SINGLE_SUCCESS;
-
 			}
 			scoreboard.setObjectiveSlot(1, newScoreboardObjective);
 			assert entity != null;
@@ -110,7 +107,6 @@ public class SBCommand {
 		}
 		assert entity != null;
 		source.getMinecraftServer().getPlayerManager().broadcastChatMessage(text, MessageType.CHAT, entity.getUuid());
-		return Command.SINGLE_SUCCESS;
 	}
 
 	public static int hideSidebar(ServerCommandSource source) {
